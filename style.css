@@ -1,0 +1,54 @@
+*,
+*:after,
+*:before {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+img,
+video,
+frame {
+    max-width: 100%;
+    height: auto;
+}
+
+
+.intro {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+
+    justify-content: flex-end;
+    flex-direction: column;
+
+}
+
+h1 {
+
+    font-size: 150px;
+    text-transform: uppercase;
+    margin-right: 20px;
+    margin-left: auto;
+
+}
+
+.container {
+    overflow-x: hidden;
+    height: 400vh;
+    width: 100vw;
+    position: absolute;
+    top: 0;
+    left: 0;
+    overflow-style: none;
+
+
+}
+
+.container::-webkit-scrollbar {
+    display: none;
+}
+
+#map {
+    position: fixed;
+}
