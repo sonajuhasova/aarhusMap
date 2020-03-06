@@ -9,33 +9,51 @@ var map = new mapboxgl.Map({
     antialias: true
 });
 
-// The 'building' layer in the mapbox-streets vector source contains building-height
-// data from OpenStreetMap.
+function rotateCamera(timestamp) {
+    // clamp the rotation between 0 -360 degrees
+    // Divide timestamp by 100 to slow rotation to ~10 degrees / sec
+    map.rotateTo((timestamp / 100) % 360, {
+        duration: 0
+    });
+    // Request the next frame of the animation.
+    requestAnimationFrame(rotateCamera);
+}
+
 map.on('load', function () {
-    // Insert the layer beneath any symbol layer.
-    var layers = map.getStyle().layers;
+    // Start the animation.
+    rotateCamera(0);
 
-    var labelLayerId;
-    for (var i = 0; i < layers.length; i++) {
-        if (layers[i].type === 'symbol' && layers[i].layout['text-field']) {
-            labelLayerId = layers[i].id;
-            break;
+
+
+
+
+    // The 'building' layer in the mapbox-streets vector source contains building-height
+    // data from OpenStreetMap.
+    map.on('load', function () {
+        // Insert the layer beneath any symbol layer.
+        var layers = map.getStyle().layers;
+
+        var labelLayerId;
+        for (var i = 0; i < layers.length; i++) {
+            if (layers[i].type === 'symbol' && layers[i].layout['text-field']) {
+                labelLayerId = layers[i].id;
+                break;
+            }
         }
-    }
 
-    map.addLayer({
-            'id': '3d-buildings',
-            'source': 'composite',
-            'source-layer': 'building',
-            'filter': ['==', 'extrude', 'true'],
-            'type': 'fill-extrusion',
-            'minzoom': 15,
-            'paint': {
-                'fill-extrusion-color': '#aaa',
+        map.addLayer({
+                'id': '3d-buildings',
+                'source': 'composite',
+                'source-layer': 'building',
+                'filter': ['==', 'extrude', 'true'],
+                'type': 'fill-extrusion',
+                'minzoom': 15,
+                'paint': {
+                    'fill-extrusion-color': '#aaa',
 
-                // use an 'interpolate' expression to add a smooth transition effect to the
-                // buildings as the user zooms in
-                'fill-extrusion-height': [
+                    // use an 'interpolate' expression to add a smooth transition effect to the
+                    // buildings as the user zooms in
+                    'fill-extrusion-height': [
 'interpolate',
 ['linear'],
 ['zoom'],
@@ -44,7 +62,7 @@ map.on('load', function () {
 15.05,
 ['get', 'height']
 ],
-                'fill-extrusion-base': [
+                    'fill-extrusion-base': [
 'interpolate',
 ['linear'],
 ['zoom'],
@@ -53,48 +71,13 @@ map.on('load', function () {
 15.05,
 ['get', 'min_height']
 ],
-                'fill-extrusion-opacity': 0.6
-            }
-        },
-        labelLayerId
-    );
+                    'fill-extrusion-opacity': 0.6
+                }
+            },
+            labelLayerId
+        );
 
 
-    //            // fly to an object
 
-    $('#aarhus').hover(function () {
-        map.flyTo({
-            center: [10.204, 56.140],
-            zoom: 12,
-
-
-        })
-    })
-
-    $('#church').hover(function () {
-        map.flyTo({
-            center: [10.212, 56.157],
-            zoom: 17,
-
-
-        })
-    })
-
-    $('#aros').hover(function () {
-        map.flyTo({
-            center: [10.202, 56.154],
-            zoom: 17,
-
-
-        })
-    })
-
-    $('#garden').hover(function () {
-        map.flyTo({
-            center: [10.195, 56.161],
-            zoom: 17,
-
-
-        })
-    })
-}); //the end
+    }); //3d buildings end
+}); //rotation end
